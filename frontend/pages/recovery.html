@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f9fc">
+    <title>Восстановление пароля</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container recovery">
+        <header class="recovery__header">
+            <p class="recovery__title title">Авто-интеллект</p>
+        </header>
+        <main class="recovery__content">
+            <h1 class="recovery__inscription title">Восстановление пароля</h1>
+            <form class="recovery__form" action="#" method="POST">
+                <div class="recovery__fields">
+                    <div class="field field--compact">
+                        <label class="field__label" for="code">Код подтверждения</label>
+                        <input class="field__input" type="text" id="code" name="code" inputmode="numeric" autocomplete="one-time-code" required>
+                    </div>
+                    <div class="field field--compact">
+                        <label class="field__label" for="password">Новый пароль</label>
+                        <input class="field__input" type="password" id="password" name="password" autocomplete="new-password" required>
+                    </div>
+                    <div class="field field--compact">
+                        <label class="field__label" for="password-confirm">Подтвердите пароль</label>
+                        <input class="field__input" type="password" id="password-confirm" name="password-confirm" autocomplete="new-password" required>
+                    </div>
+                </div>
+                <button class="recovery__submit btn btn--light btn--large" type="submit">Войти</button>
+            </form>
+            <a class="recovery__back" href="login.html">Вернуться на страницу входа</a>
+        </main>
+    </div>
+</body>
+</html>

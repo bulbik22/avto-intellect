@@ -1,0 +1,16 @@
+@use "../global/variables" as *;
+
+
+.app {
+  display: flex;
+  flex-direction: column;
+  padding-inline: 2px;         
+  @include fluid-space(padding-top, 28, 12);
+  @include fluid-space(gap, 27, 12);
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+}

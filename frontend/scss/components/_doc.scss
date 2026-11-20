@@ -1,0 +1,52 @@
+@use "../global/variables" as *;
+
+// Карточка сохранённого документа (личный кабинет): сверху прокручиваемый предпросмотр, снизу два действия.
+// Подходит и для документа («Сохранить в pdf» / «Удалить»), и для черновика («Продолжить» / «Удалить»).
+.doc {
+  display: flex;
+  flex-direction: column;
+  border-radius: $radius-block;
+  background: #fff;
+  color: $color-bg-top;
+  @include fluid-space(height, 181, 150);
+
+  // Предпросмотр: картинка страницы или HTML документа;
+  &__preview {
+    flex: 1;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 8px 6px 0;
+    @include fluid-font(20, 16);
+
+    img { display: block; width: 100%; height: auto; }
+
+    &:focus-visible { outline: 2px solid $color-doc-link; outline-offset: -2px; }
+  }
+
+  // подсказка, пока предпросмотра нет
+  &__hint { color: $color-doc-muted; }
+
+  &--draft &__preview { color: $color-draft; }
+
+  &__actions {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0 6px;
+  }
+
+  // «Сохранить в pdf» / «Продолжить» — ссылки, «Удалить» — кнопка;
+  &__action {
+    padding: 10px 0 0;
+    border: 0;
+    background: none;
+    color: $color-doc-link;
+    font: inherit;
+    @include fluid-font(20, 16);
+    cursor: pointer;
+
+    &--delete { color: $color-delete; }
+    &.is-confirm { text-decoration: underline; }
+  }
+}

@@ -1,0 +1,93 @@
+@use "../global/variables" as *;
+
+// «Личный кабинет»: карточка на всю страницу, без шапки — название приложения внутри неё
+.cabinet {
+  padding-inline: 17px 22px;
+  border-radius: $radius-card;
+  @include fluid-space(padding-top, 25, 12);
+  @include fluid-space(padding-bottom, 30, 16);
+
+  &__brand { font-size: unquote("min(2.25rem, calc((100vw - 70px) / 7.7))"); }
+
+  &__subtitle { @include fluid-font(18, 15); }
+
+  &__title,
+  &__heading { @include fluid-font(32, 24); }
+
+  &__title { @include fluid-space(margin-top, 24, 10); }
+
+  &__field {
+    @include fluid-space(margin-top, 14, 8);
+    @include fluid-space(gap, 16, 8);
+  }
+
+  &__value {
+    margin-inline: -2px 3px;
+    @include fluid-font(22, 17);
+  }
+
+  &__heading {
+    @include fluid-space(margin-top, 30, 16);
+    @include fluid-space(margin-bottom, 25, 12);
+  }
+
+  &__logout {
+    align-self: center;
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+    padding: 0 23px;
+    border-radius: 10px;
+    background: $color-btn-dark;
+    color: $color-text;
+    text-align: center;
+    @include fluid-font(18, 15);
+    min-height: 34px;
+    position: relative;
+
+    &::before {
+      content: "";
+      position: absolute;
+      inset: -5px 0;
+    }
+  }
+}
+
+.saved {
+  display: flex;
+  flex-direction: column;
+  gap: 21px;
+  min-height: 500px;
+  margin-inline: -2px 3px;
+  padding: 16px 13.5px;
+  border-radius: $radius-block;
+  background: linear-gradient(to bottom, $color-btn-light, $color-panel-bottom);
+  @include fluid-space(margin-bottom, 40, 20);
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+  }
+
+  &__empty {
+    padding: 8px 0;
+    color: $color-ink;
+    @include fluid-font(18, 15);
+  }
+
+  &__new {
+    align-self: flex-start;
+    display: flex;
+    align-items: center;
+    gap: 23px;
+    padding: 0 12px 0 7px;
+    border-radius: $radius-block;
+    background: #fff;
+    color: $color-new;
+    @include fluid-font(24, 18);
+    min-height: 40px;
+  }
+
+  &__plus { flex: none; width: 0.92em; height: 0.92em; }   // 22px при 24px
+}

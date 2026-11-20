@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f9fc">
+    <title>Советчик</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container app">
+        <header class="app-header">
+            <p class="app-header__brand">Авто-интеллект</p>
+            <a class="app-header__profile" href="cabinet.html" aria-label="Личный кабинет">
+                <svg class="app-header__icon" viewBox="0 0 49 49" aria-hidden="true">
+                    <path d="M9.67 44A24.5 24.5 0 1 1 39.33 44Z" fill="currentColor"/>
+                    <circle cx="24.5" cy="18.5" r="9" fill="#fff"/>
+                    <path d="M9.67 44C9.67 36 16 30 24.5 30C33 30 39.33 36 39.33 44Z" fill="#fff"/>
+                </svg>
+            </a>
+        </header>
+        <main class="app__content">
+            <section class="card advice">
+                <h1 class="card__title">Советчик</h1>
+                <p class="advice__subtitle">Чинить или продавать?</p>
+                <!-- Подсветка варианта: добавить к <output> класс output--best (лучший, зелёный), output--mid (средний, оранжевый)
+                     или output--worst (худший, красный). Слова лучшего варианта в рекомендации: <span class="advice__accent">…</span> -->
+                <div class="advice__body">
+                    <div class="field field--sm result__field">
+                        <span class="field__label" id="as-is-label">При продаже как есть:</span>
+                        <output class="output output--line output--value advice__value" aria-labelledby="as-is-label"></output>
+                    </div>
+                    <div class="field field--sm result__field">
+                        <span class="field__label" id="repair-sale-label">При ремонте и продаже:</span>
+                        <output class="output output--line output--value advice__value" aria-labelledby="repair-sale-label"></output>
+                    </div>
+                    <div class="field field--sm result__field">
+                        <span class="field__label" id="repair-use-label">При ремонте и эксплуатации:</span>
+                        <output class="output output--line output--value advice__value" aria-labelledby="repair-use-label"></output>
+                    </div>
+                    <div class="field field--sm result__field advice__field--grow">
+                        <span class="field__label" id="advice-label">Рекомендуем:</span>
+                        <!-- Подсказки показываем, пока нет результата; при появлении — заменить текстом рекомендации -->
+                        <output class="output advice__text" aria-labelledby="advice-label">
+                            <p class="output__hint">Выгоднее продать как есть/</p>
+                            <p class="output__hint">Отремонтировать и продать/</p>
+                            <p class="output__hint">Отремонтировать и эксплуатировать</p>
+                        </output>
+                    </div>
+                    <button class="advice__pdf btn btn--light" type="button">Сохранить в pdf</button>
+                </div>
+                <div class="card__actions card__actions--fit">
+                    <a class="card__action btn btn--navy btn--large" href="valuation.html">
+                        <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
+                            <path d="M7 1L1 7L7 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                        Назад
+                    </a>
+                    <button class="card__action btn btn--navy btn--large" type="button">
+                        Сохранить
+                        <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
+                            <path d="M1 1L7 7L1 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f9fc">
+    <title>Личный кабинет</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container">
+        <main class="card cabinet">
+            <p class="cabinet__brand">Авто-интеллект</p>
+            <p class="cabinet__subtitle">Умный помощник</p>
+            <h1 class="cabinet__title">Личный кабинет</h1>
+
+            <div class="field field--sm cabinet__field">
+                <span class="field__label" id="email-label">Email</span>
+                <output class="output output--line output--value cabinet__value" aria-labelledby="email-label"></output>
+            </div>
+
+            <h2 class="cabinet__heading" id="saved-title">Отслеживаемое и сохраненное</h2>
+            <section class="saved" aria-labelledby="saved-title">
+                <!-- Документы и черновики подставляет сервер или JS. data-id — идентификатор для запроса на удаление -->
+                <ul class="saved__list" id="saved-list">
+                    <!-- Документ: в .doc__preview — картинка страницы (<img>) или HTML документа, он листается внутри карточки.
+                         Пока предпросмотра нет, показываем .doc__hint -->
+                    <li class="doc" data-id="1">
+                        <div class="doc__preview" tabindex="0" role="region" aria-label="Предпросмотр документа">
+                            <p class="doc__hint">Скролл документа</p>
+                        </div>
+                        <div class="doc__actions">
+                            <a class="doc__action" href="#" download>Сохранить в pdf</a>
+                            <button class="doc__action doc__action--delete" type="button" data-doc-delete>Удалить</button>
+                        </div>
+                    </li>
+                    <li class="doc doc--draft" data-id="2">
+                        <div class="doc__preview" tabindex="0" role="region" aria-label="Предпросмотр черновика">
+                            <p>Черновик</p>
+                        </div>
+                        <div class="doc__actions">
+                            <a class="doc__action" href="car-data.html">Продолжить</a>
+                            <button class="doc__action doc__action--delete" type="button" data-doc-delete>Удалить</button>
+                        </div>
+                    </li>
+                </ul>
+                <p class="saved__empty" id="saved-empty" hidden>Пока здесь ничего нет</p>
+                <a class="saved__new" href="car-data.html">
+                    Новый расчет
+                    <svg class="saved__plus" viewBox="0 0 22 22" aria-hidden="true">
+                        <path d="M11 0V22M0 11H22" fill="none" stroke="currentColor" stroke-width="3"/>
+                    </svg>
+                </a>
+            </section>
+
+            <a class="cabinet__logout" href="login.html" data-logout>Выйти из аккаунта</a>
+        </main>
+    </div>
+
+    <script src="../js/cabinet.js"></script>
+</body>
+</html>

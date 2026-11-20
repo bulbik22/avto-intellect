@@ -1,0 +1,21 @@
+@use "../global/variables" as *;
+
+// Только то, чем шаг «Код подтверждения» отличается от остальных экранов (общее — в _auth.scss)
+.confirm {
+  &__inscription {
+    @include fluid-space(margin-bottom, 19, 12);
+  }
+
+  &__submit {
+    display: flex;
+    width: 100%;
+    max-width: 276px;
+    min-height: 52px;
+    margin-inline: auto;
+    @include fluid-space(margin-top, 32, 14);
+  }
+
+  &__login {
+    @include fluid-space(margin-top, 18, 10);
+  }
+}

@@ -1,0 +1,40 @@
+@use "../global/variables" as *;
+
+// «Смета ремонта» и «Оценка стоимости»: только то, чем экран отличается от общей карточки (.card), полей (.field), результатов (.output) и шкалы (.scale)
+.result {
+  &__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    @include fluid-space(gap, 20, 10);
+    @include fluid-space(margin-top, 13, 6);
+    @include fluid-space(margin-bottom, 60, 12);
+  }
+
+  &__field {
+    @include fluid-space(gap, 10, 6);
+  }
+
+  &__damages { @include fluid-space(min-height, 93, 56); }
+  &__options { @include fluid-space(min-height, 110, 56); }
+
+  &__total {
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+
+    .output { flex: 1; min-width: 0; }
+  }
+
+  &__body--tight {
+    @include fluid-space(gap, 14, 8);
+
+    .result__field { @include fluid-space(gap, 13, 6); }
+    .field__label { margin-left: -3px; }
+  }
+
+  &__value {
+    margin-inline: 1px 8px;
+    @include fluid-space(min-height, 39, 36);
+  }
+}

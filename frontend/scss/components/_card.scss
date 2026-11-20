@@ -1,0 +1,53 @@
+@use "../global/variables" as *;
+
+// Градиентная карточка внутренних экранов: заголовок, пояснение, содержимое и кнопки внизу
+.card {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-inline: 16px;
+  color: $color-text;
+  @include gradient-bg;
+  @include fluid-space(padding-top, 11, 8);
+  @include fluid-space(padding-bottom, 12, 10);
+
+  &__title { font-size: unquote("clamp(1.25rem, calc((100vw - 66px) / 11.6), 1.75rem)"); }
+
+  &__text {
+    @include fluid-font(18, 15);
+    @include fluid-space(margin-top, 17, 8);
+  }
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+    column-gap: clamp(12px, calc(18vw - 46px), 24px);
+
+    &--split .card__action {
+      flex: 1;
+      min-width: 0;
+      padding-inline: 4px;
+    }
+
+    &--fit {
+      column-gap: 12px;
+
+      .card__action {
+        min-width: 0;
+        padding-inline: 10px;
+        font-size: unquote("min(2rem, calc((100vw - 118px) / 8.6))");
+
+        &:first-child { flex: 123 1 0; }
+        &:last-child { flex: 190 1 0; }
+      }
+    }
+  }
+
+  &__action {
+    text-align: center;
+    min-height: 50px;
+    padding-block: 0;
+    padding-inline: 16.5px;
+    border-radius: $radius-block;
+  }
+}

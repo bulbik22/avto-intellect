@@ -1,0 +1,27 @@
+@use "../global/variables" as *;
+
+// «Поиск запчастей»: только то, чем экран отличается от общей карточки (.card) и белого поля (.output)
+.search {
+  padding-bottom: 7px;
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    @include fluid-space(gap, 12, 6);
+    @include fluid-space(margin-top, 13, 6);
+    @include fluid-space(margin-bottom, 12, 8);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 0;
+    min-height: 150px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 8px 9px;
+    gap: 8px;
+  }
+
+}

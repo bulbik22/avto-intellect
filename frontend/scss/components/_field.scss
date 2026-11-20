@@ -1,0 +1,32 @@
+@use "../global/variables" as *;
+
+.field {
+  display: flex;
+  flex-direction: column;
+  @include fluid-space(gap, 11, 6);
+
+  &__label { @include fluid-font(32, 24); }
+
+  &--compact &__label {
+    font-size: clamp(1.25rem, calc(8.4vw - 5.5px), 1.75rem);
+    line-height: 1.6;
+  }
+
+  &--sm { @include fluid-space(gap, 19, 10); }
+  &--sm &__label { @include fluid-font(24, 18); }
+
+  &__input {
+    width: 100%;
+    @include fluid-space(height, 42, 40);
+    padding: 0 12px;
+    border: 0;
+    border-radius: $radius;
+    background: #fff;
+    color: #000;
+    font: inherit;
+
+    &::placeholder { color: $color-placeholder; opacity: 1; }
+
+    &--area { height: auto; min-height: 120px; padding-block: 10px; resize: none; }
+  }
+}

@@ -1,0 +1,34 @@
+@use "../global/variables" as *;
+
+// Шкала «Повреждения в целом»: подпись, стрелка-указатель и градиентная полоса от зелёного к красному.
+// Положение стрелки задаётся переменной --level (0%–100%) на .scale; без неё — по центру.
+.scale {
+  text-align: center;
+  @include fluid-font(24, 18);
+
+  &__track {
+    margin-inline: -4px;
+    @include fluid-space(margin-top, 14, 6);
+  }
+
+  &__marker {
+    position: relative;
+    height: 15px;
+    margin-bottom: 10px;
+  }
+
+  &__arrow {
+    position: absolute;
+    top: 0;
+    left: var(--level, 50%);
+    width: 23px;
+    height: 15px;
+    transform: translateX(-50%);
+  }
+
+  &__bar {
+    border-radius: $radius;
+    background: linear-gradient(to right, $color-scale-low 9%, $color-scale-mid 51%, $color-scale-high 93%);
+    @include fluid-space(height, 43, 32);
+  }
+}

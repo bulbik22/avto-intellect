@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f9fc">
+    <title>Оценка стоимости авто</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container app">
+        <header class="app-header">
+            <p class="app-header__brand">Авто-интеллект</p>
+            <a class="app-header__profile" href="cabinet.html" aria-label="Личный кабинет">
+                <svg class="app-header__icon" viewBox="0 0 49 49" aria-hidden="true">
+                    <path d="M9.67 44A24.5 24.5 0 1 1 39.33 44Z" fill="currentColor"/>
+                    <circle cx="24.5" cy="18.5" r="9" fill="#fff"/>
+                    <path d="M9.67 44C9.67 36 16 30 24.5 30C33 30 39.33 36 39.33 44Z" fill="#fff"/>
+                </svg>
+            </a>
+        </header>
+        <main class="app__content">
+            <section class="card result">
+                <h1 class="card__title">Оценка стоимости авто</h1>
+                <div class="result__body result__body--tight">
+                    <div class="field field--sm result__field">
+                        <span class="field__label" id="as-is-label">Как есть:</span>
+                        <output class="output output--line result__value" aria-labelledby="as-is-label"></output>
+                    </div>
+                    <div class="field field--sm result__field">
+                        <span class="field__label" id="repaired-label">После ремонта:</span>
+                        <output class="output output--line result__value" aria-labelledby="repaired-label"></output>
+                    </div>
+                </div>
+                <div class="card__actions card__actions--split">
+                    <a class="card__action btn btn--navy btn--large" href="search.html">
+                        <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
+                            <path d="M7 1L1 7L7 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                        Назад
+                    </a>
+                    <a class="card__action btn btn--navy btn--large" href="#">
+                        Далее
+                        <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
+                            <path d="M1 1L7 7L1 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                    </a>
+                </div>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+@use "../global/variables" as *;
+
+// (списки — <ul class="output">, одно значение — <output class="output output--line">).
+.output {
+  margin-inline: -8px;
+  padding: 10px;
+  border-radius: $radius;
+  background: #fff;
+  color: #000;
+  @include fluid-font(18, 15);
+
+  &--line {
+    display: flex;
+    align-items: center;
+    @include fluid-space(min-height, 42, 40);
+    padding-block: 0;
+  }
+
+  &--value {
+    padding-inline: 7px;
+    border-radius: $radius-block;
+    color: $color-bg-top;
+    @include fluid-font(20, 16);
+    @include fluid-space(min-height, 40, 36);
+  }
+
+  &__hint { color: $color-placeholder; }
+
+  // Подсветка результата полоской-свечением под полем: лучший / средний / худший вариант
+  &--best { box-shadow: 0 4px 3px -2px $color-best; }
+  &--mid { box-shadow: 0 4px 3px -2px $color-mid; }
+  &--worst { box-shadow: 0 4px 3px -2px $color-worst; }
+}

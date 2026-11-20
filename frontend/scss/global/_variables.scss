@@ -1,0 +1,68 @@
+@use "sass:math";
+
+// Цвета 
+$color-text: #ffffff;
+$color-ink: #132d58;           // тёмный текст: заголовок «Вход», текст на светлой кнопке
+$color-page-bg: #f7f9fc;       // фон страницы вокруг карточки (на экране входа в макете чисто белый)
+$color-bg-top: #1b3a6b;
+$color-bg-bottom: #00b8d9;
+$color-btn-dark: #204a8c;
+$color-btn-light: #b0f3ff;
+$color-btn-accent: #11cced;
+$color-link: $color-btn-dark;  // ссылки и текст на акцентной кнопке
+$color-avatar: #031936;        // значок личного кабинета в шапке
+$color-camera: #052956;        // значок камеры в слоте загрузки фото
+$color-slot: #8da8cb;          // пустой слот под фото
+$color-placeholder: #90a5c6;   // подсказка в полях ввода
+$color-remove: #b92c2c;        // крестик «удалить фото»
+$color-offer-bg: #eef3fa;       // карточка предложения в белом поле
+$color-offer-muted: #5b6f93;   // продавец и регион в карточке предложения
+$color-offer-used: #dbe3f0;    // плашка «Б/у»
+$color-btn-light-text: #1f56ae; // текст на светлой кнопке «Сохранить в pdf»
+$color-doc-muted: #8d9db5;     // подсказка в карточке документа
+$color-doc-link: #216cdb;      // «Сохранить в pdf», «Продолжить»
+$color-delete: #bd2d2d;        // «Удалить»
+$color-draft: #b15858;         // подпись «Черновик»
+$color-new: #1250b1;           // «Новый расчёт» и плюс
+$color-panel-bottom: #50e3fd;  // низ панели с документами (верх — $color-btn-light)
+$color-best: #92fd6e;          // подсветка результата: лучший / средний / худший вариант
+$color-mid: #fca04a;
+$color-worst: #de4445;
+$color-accent: #4cc720;        // выделение лучшего варианта в тексте рекомендации
+$color-scale-low: #94ff6d;     // шкала повреждений: слева (мало) ...
+$color-scale-mid: #ff9d48;
+$color-scale-high: #ff4245;    // ... справа (много)
+
+// Шрифт
+$font-main: "Manrope", sans-serif;
+$line-height: 1.366;           // «авто» высота строки Manrope из Figma
+
+// Общее
+$radius: 12px;                 // кнопки и поля ввода
+$radius-card: 2px;             // карточка на экране приветствия
+$radius-block: 4px;            // плашка с названием и карточка с формой
+$container-width: 480px;       // потолок для планшетов/десктопа; на телефонах карточка на всю ширину
+
+// Макет нарисован под экран 390×844
+$mockup-width: 390;
+$mockup-height: 844;
+// Ниже этой высоты экрана все вертикальные отступы уже на минимуме
+$min-height: 650;
+
+@mixin gradient-bg {
+  background: linear-gradient(to bottom, $color-bg-top, $color-bg-bottom);
+}
+
+// Размер шрифта: $px — как в макете (экран 390px и шире),
+// на узких телефонах плавно уменьшается, но не меньше $min. Границы в rem — уважаем настройки браузера.
+@mixin fluid-font($px, $min) {
+  font-size: unquote("clamp(#{math.div($min, 16)}rem, #{math.div($px * 100, $mockup-width)}vw, #{math.div($px, 16)}rem)");
+}
+
+// Вертикальный отступ: $px — как в макете (экран высотой 844 и выше),
+// на низких экранах плавно сжимается до $min. Первая строка — запасной вариант без dvh.
+@mixin fluid-space($prop, $px, $min) {
+  $k: math.div($px - $min, $mockup-height - $min-height);
+  #{$prop}: $px * 1px;
+  #{$prop}: unquote("clamp(#{$min}px, #{$min}px + (100dvh - #{$min-height}px) * #{$k}, #{$px}px)");
+}

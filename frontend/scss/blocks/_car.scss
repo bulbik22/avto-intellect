@@ -1,0 +1,20 @@
+@use "../global/variables" as *;
+
+// «Данные автомобиля»
+.car {
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    @include fluid-space(gap, 12.5, 8);
+    @include fluid-space(margin-top, 42, 16);
+    @include fluid-space(margin-bottom, 61, 16);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(12px, calc(30vw - 71px), 47px);
+
+    .field { justify-content: space-between; }
+  }
+}

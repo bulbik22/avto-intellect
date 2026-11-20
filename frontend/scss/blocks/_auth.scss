@@ -1,0 +1,71 @@
+@use "../global/variables" as *;
+
+.login,
+.registration,
+.confirm,
+.recovery {
+  padding-inline: clamp(1rem, 5vw, 2rem);
+  @include fluid-space(padding-top, 29, 12);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    padding-inline: 15px;
+    border-radius: $radius-block;
+    background: $color-bg-top;
+    color: $color-text;
+    @include fluid-space(min-height, 70, 54);
+  }
+
+  &__inscription {
+    color: $color-ink;
+    @include fluid-space(margin-top, 71, 16);
+    @include fluid-space(margin-bottom, 11, 8);
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    padding-inline: 15px;
+    border-radius: $radius-block;
+    color: $color-text;
+    @include gradient-bg;
+    @include fluid-space(gap, 12, 8);
+    @include fluid-space(padding-top, 16, 12);
+    @include fluid-space(padding-bottom, 12, 10);
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    @include fluid-space(gap, 20, 12);
+  }
+}
+
+.login__submit,
+.recovery__submit {
+  align-self: center;
+}
+
+.login__registration,
+.registration__login,
+.confirm__login,
+.recovery__back {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: $color-link;
+  @include fluid-space(gap, 9, 6);
+  @include fluid-space(margin-top, 10, 6);
+}
+
+.recovery__form,
+.confirm__form {
+  @include fluid-space(padding-bottom, 21, 12);
+}
+
+.registration__login,
+.confirm__login {
+  color: $color-bg-top;
+}

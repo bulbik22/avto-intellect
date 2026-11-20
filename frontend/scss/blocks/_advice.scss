@@ -1,0 +1,52 @@
+@use "../global/variables" as *;
+
+// «Советчик»: только то, чем экран отличается от общей карточки (.card), подписей (.field), результатов (.output) и кнопок
+.advice {
+  &__subtitle { @include fluid-font(20, 16); }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    @include fluid-space(gap, 10, 6);
+    @include fluid-space(margin-top, 9, 4);
+    @include fluid-space(margin-bottom, 18, 8);
+
+    .field__label {
+      margin-inline: -3px -8px;
+      font-size: unquote("min(1.5rem, calc((100vw - 55px) / 14.2))");
+    }
+  }
+
+  &__value { margin-inline: -2px 5px; }
+
+  // «Рекомендуем»: подпись + большое поле, которое занимает всё свободное место
+  &__field--grow { flex: 1; }
+
+  &__text {
+    flex: 1 1 0;
+    min-height: 70px;
+    overflow-y: auto;
+    margin-inline: -2px 5px;
+    padding: 6px 7px;
+    color: $color-bg-top;
+    @include fluid-font(20, 16);
+
+    .output__hint { font-size: 0.8em; } 
+  }
+
+  &__accent { color: $color-accent; }
+
+  &__pdf {
+    display: flex;
+    margin-inline: -2px 5px;
+    padding-block: 0;
+    color: $color-btn-light-text;
+    @include fluid-space(margin-top, 5, 2);
+    @include fluid-space(min-height, 40, 36);
+    @include fluid-font(22, 17);
+  }
+
+  &__text,
+  &__pdf { border-radius: $radius-block; }
+}

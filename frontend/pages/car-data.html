@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f9fc">
+    <title>Данные автомобиля</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container app">
+        <header class="app-header">
+            <p class="app-header__brand">Авто-интеллект</p>
+            <a class="app-header__profile" href="cabinet.html" aria-label="Личный кабинет">
+                <svg class="app-header__icon" viewBox="0 0 49 49" aria-hidden="true">
+                    <path d="M9.67 44A24.5 24.5 0 1 1 39.33 44Z" fill="currentColor"/>
+                    <circle cx="24.5" cy="18.5" r="9" fill="#fff"/>
+                    <path d="M9.67 44C9.67 36 16 30 24.5 30C33 30 39.33 36 39.33 44Z" fill="#fff"/>
+                </svg>
+            </a>
+        </header>
+        <main class="app__content">
+            <form class="card car" action="#" method="POST">
+                <h1 class="card__title">Данные автомобиля</h1>
+                <p class="card__text">Нужны для точного расчёта и идентификатора</p>
+                <div class="car__fields">
+                    <div class="field field--sm">
+                        <label class="field__label" for="brand">Марка</label>
+                        <input class="field__input" type="text" id="brand" name="brand" autocomplete="off" required>
+                    </div>
+                    <div class="field field--sm">
+                        <label class="field__label" for="model">Модель</label>
+                        <input class="field__input" type="text" id="model" name="model" autocomplete="off" required>
+                    </div>
+                    <div class="car__row">
+                        <div class="field field--sm">
+                            <label class="field__label" for="year">Год выпуска</label>
+                            <input class="field__input" type="text" id="year" name="year" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" required>
+                        </div>
+                        <div class="field field--sm">
+                            <label class="field__label" for="mileage">Пробег, км</label>
+                            <input class="field__input" type="text" id="mileage" name="mileage" inputmode="numeric" autocomplete="off" required>
+                        </div>
+                    </div>
+                    <div class="field field--sm">
+                        <label class="field__label" for="region">Регион</label>
+                        <input class="field__input" type="text" id="region" name="region" autocomplete="address-level1" required>
+                    </div>
+                </div>
+                <div class="card__actions">
+                    <button class="card__action btn btn--navy btn--large" type="submit">
+                        Далее
+                        <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
+                            <path d="M1 1L7 7L1 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+</body>
+</html>

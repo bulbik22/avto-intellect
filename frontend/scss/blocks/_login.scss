@@ -1,0 +1,13 @@
+@use "../global/variables" as *;
+
+// Только то, чем вход отличается от регистрации (общее — в _auth.scss)
+.login {
+  &__submit {
+    @include fluid-space(margin-top, 8, 4);
+  }
+
+  &__registration-button {
+    width: 100%;
+    max-width: 272px;
+  }
+}

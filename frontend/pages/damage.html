@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f9fc">
+    <title>Описание повреждений</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container app">
+        <header class="app-header">
+            <p class="app-header__brand">Авто-интеллект</p>
+            <a class="app-header__profile" href="cabinet.html" aria-label="Личный кабинет">
+                <svg class="app-header__icon" viewBox="0 0 49 49" aria-hidden="true">
+                    <path d="M9.67 44A24.5 24.5 0 1 1 39.33 44Z" fill="currentColor"/>
+                    <circle cx="24.5" cy="18.5" r="9" fill="#fff"/>
+                    <path d="M9.67 44C9.67 36 16 30 24.5 30C33 30 39.33 36 39.33 44Z" fill="#fff"/>
+                </svg>
+            </a>
+        </header>
+        <main class="app__content">
+            <form class="card damage" action="#" method="POST" enctype="multipart/form-data">
+                <h1 class="card__title">Описание повреждений</h1>
+                <p class="card__text">Загрузите фото и/или опишите проблему текстом</p>
+                <div class="damage__fields">
+                    <div class="field field--sm">
+                        <span class="field__label" id="photos-label">Загрузка фото</span>
+                        <input class="visually-hidden" type="file" id="photo-input" name="photos" accept="image/*" multiple>
+                        <ul class="photos" id="photos" aria-labelledby="photos-label">
+                            <li class="photos__slot photos__slot--add">
+                                <label class="photos__add" for="photo-input">
+                                    <svg class="photos__camera" viewBox="0 0 54 42" aria-hidden="true">
+                                        <path fill="currentColor" d="M4 7H14L20.5 .6Q21 0 22 0H32Q33 0 33.5 .6L40 7H50Q54 7 54 11V37.7Q54 41.7 50 41.7H4Q0 41.7 0 37.7V11Q0 7 4 7Z"/>
+                                        <circle cx="27" cy="23" r="10.5" fill="none" stroke="#fff" stroke-width="3"/>
+                                        <circle cx="48.7" cy="12" r="1.8" fill="#fff"/>
+                                    </svg>
+                                    <span class="visually-hidden">Добавить фото</span>
+                                </label>
+                            </li>
+                            <li class="photos__slot"></li>
+                            <li class="photos__slot"></li>
+                            <li class="photos__slot"></li>
+                            <li class="photos__slot"></li>
+                            <li class="photos__slot"></li>
+                        </ul>
+                    </div>
+                    <div class="field field--sm damage__text">
+                        <label class="field__label" for="description">Опишите проблему</label>
+                        <textarea class="field__input field__input--area damage__textarea" id="description" name="description" placeholder="Удар в переднюю часть . . ."></textarea>
+                    </div>
+                </div>
+                <div class="card__actions card__actions--split">
+                    <a class="card__action btn btn--navy btn--large" href="car-data.html">
+                        <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
+                            <path d="M7 1L1 7L7 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                        Назад
+                    </a>
+                    <button class="card__action btn btn--navy btn--large" type="submit">
+                        Анализ
+                        <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
+                            <path d="M1 1L7 7L1 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </main>
+    </div>
+
+    <!-- Шаблон слота с загруженным фото: JS подставляет картинку -->
+    <template id="photo-template">
+        <li class="photos__slot photos__slot--filled">
+            <img class="photos__img" src="" alt="">
+            <button class="photos__remove" type="button">
+                <svg width="14" height="14" viewBox="0 0 14 14" aria-hidden="true">
+                    <path d="M1.5 1.5L12.5 12.5M12.5 1.5L1.5 12.5" fill="none" stroke="currentColor" stroke-width="3"/>
+                </svg>
+            </button>
+        </li>
+    </template>
+
+    <script src="../js/photos.js"></script>
+</body>
+</html>

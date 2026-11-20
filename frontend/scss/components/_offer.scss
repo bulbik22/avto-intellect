@@ -1,0 +1,42 @@
+@use "../global/variables" as *;
+
+// Карточка предложения на экране «Поиск запчастей» (внутри белого поля .output):
+// сверху название и цена, снизу состояние плашкой и «продавец · регион».
+.offer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 6px 12px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: $color-offer-bg;
+  color: $color-ink;
+
+  &__name { @include fluid-font(18, 15); }
+
+  &__price {
+    color: $color-btn-dark;
+    white-space: nowrap;
+    @include fluid-font(20, 16);
+  }
+
+  &__info {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 4px 10px;
+    color: $color-offer-muted;
+    @include fluid-font(14, 12);
+  }
+
+  // «Новое» — голубая плашка, «Б/у» — серо-синяя
+  &__state {
+    padding: 2px 10px;
+    border-radius: 100px;
+    background: $color-offer-used;
+    color: $color-ink;
+
+    &--new { background: $color-btn-light; }
+  }
+}

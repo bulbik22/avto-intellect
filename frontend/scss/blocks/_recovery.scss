@@ -1,0 +1,23 @@
+@use "../global/variables" as *;
+
+// Только то, чем восстановление пароля отличается от входа и регистрации (общее — в _auth.scss)
+.recovery {
+  &__inscription {
+    @include fluid-space(margin-top, 32, 10);
+    @include fluid-space(margin-bottom, 6, 4);
+  }
+
+  &__fields {
+    @include fluid-space(gap, 16, 10);
+  }
+
+  &__submit {
+    @include fluid-space(margin-top, 14, 8);
+  }
+
+  &__back {
+    max-width: 12em;
+    margin-inline: auto;
+    @include fluid-space(margin-top, 11, 6);
+  }
+}

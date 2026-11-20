@@ -1,0 +1,40 @@
+@use "../global/variables" as *;
+
+.welcome {
+  display: flex;
+  flex-direction: column;
+  @include fluid-space(padding-top, 24, 14);
+  @include fluid-space(padding-bottom, 69, 20);
+  border-radius: $radius-card;
+  color: $color-text;
+  @include gradient-bg;
+
+  &__header,
+  &__message,
+  &__list {
+    margin-inline: 17px 10px;
+  }
+
+  &__content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
+  &__message {
+    @include fluid-space(margin-top, 85, 16);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    @include fluid-space(gap, 42, 16);
+    @include fluid-space(margin-top, 35, 16);
+    @include fluid-space(margin-bottom, 75, 16);
+  }
+
+  &__btn {
+    align-self: center;
+    margin-top: auto;
+  }
+}

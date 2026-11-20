@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f7f9fc">
+    <title>Регистрация: код подтверждения</title>
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container confirm">
+        <header class="confirm__header">
+            <p class="confirm__title title">Авто-интеллект</p>
+        </header>
+        <main class="confirm__content">
+            <h1 class="confirm__inscription title title--large">Регистрация</h1>
+            <form class="confirm__form" id="confirm-form" action="#" method="POST">
+                <div class="field field--compact">
+                    <label class="field__label" for="code">Код подтверждения</label>
+                    <input class="field__input" type="text" id="code" name="code" inputmode="numeric" autocomplete="one-time-code" required>
+                </div>
+            </form>
+            <button class="confirm__submit btn btn--light btn--medium" type="submit" form="confirm-form">Зарегистрироваться</button>
+            <div class="confirm__login">
+                <p class="confirm__login-text">Уже есть аккаунт? -</p>
+                <a class="confirm__login-button btn btn--accent btn--medium" href="login.html">Войти</a>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

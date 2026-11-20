@@ -1,0 +1,7 @@
+@use "../global/variables" as *;
+
+.title {
+  @include fluid-font(36, 28);
+
+  &--large { @include fluid-font(40, 30); }
+}
