@@ -29,6 +29,7 @@ class LoginSession(Base):
     __tablename__ = "sessions"
 
     id: Mapped[str] = mapped_column(primary_key=True)
+    refresh_digest: Mapped[str | None]
     account: Mapped[str]
     expires: Mapped[int] = mapped_column(BigInteger)
 

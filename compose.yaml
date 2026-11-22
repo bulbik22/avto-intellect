@@ -24,6 +24,7 @@ services:
       PGDATABASE: ${POSTGRES_DB:-avto_intellect}
       PGUSER: ${POSTGRES_USER:-avto}
       PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      HTTPS_ONLY: ${HTTPS_ONLY:-0}
       AUTH_SECRET: ${AUTH_SECRET:?Set AUTH_SECRET in .env}
     volumes:
       - ./frontend:/app/frontend:ro

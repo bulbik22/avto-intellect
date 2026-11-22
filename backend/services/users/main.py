@@ -144,21 +144,60 @@ def reset(body: Reset):
     return {"updated": True}
 
 
+ACCESS_SECONDS = 15 * 60
+SESSION_SECONDS = 30 * 24 * 3600
+AUTH_PATH = "/api/v1/auth"
+
+
+def refresh_digest(secret):
+    return hashlib.sha256(secret.encode()).hexdigest()
+
+
+def set_session_cookies(response, sid, account, expires, secret):
+    remaining = expires - int(time.time())
+    access_seconds = min(ACCESS_SECONDS, remaining)
+    access = jwt.encode(dict(sub=account, jti=sid, exp=int(time.time()) + access_seconds),
+                        KEY, algorithm="HS256")
+    flags = dict(httponly=True, samesite="strict", secure=os.getenv("HTTPS_ONLY") == "1")
+    response.set_cookie("session", access, max_age=access_seconds, **flags)
+    response.set_cookie("refresh", f"{sid}.{secret}", path=AUTH_PATH, max_age=remaining, **flags)
+
+
 @api.post("/auth/login")
 def login(body: Credentials, response: Response):
     with Sessions.begin() as db:
-        account = db.scalar(select(Account).where(Account.email == body.email.lower()))
+        account = db.scalar(select(Account).where(Account.email == body.email.lower()).with_for_update())
         if not account or not account.confirmed:
             raise HTTPException(401, "Проверьте email, пароль и подтверждение регистрации")
         salt, stored = account.password.split(":")
         if not hmac.compare_digest(stored, password_hash(body.password, salt)):
             raise HTTPException(401, "Проверьте email и пароль")
         sid = str(uuid4())
-        exp = int(time.time()) + 3600
-        db.add(LoginSession(id=sid, account=account.id, expires=exp))
-        token = jwt.encode(dict(sub=account.id, jti=sid, exp=exp), KEY, algorithm="HS256")
-    response.set_cookie("session", token, max_age=3600, httponly=True, samesite="strict",
-                        secure=os.getenv("HTTPS_ONLY") == "1")
+        expires = int(time.time()) + SESSION_SECONDS
+        secret = secrets.token_urlsafe(32)
+        db.add(LoginSession(id=sid, account=account.id, expires=expires,
+                            refresh_digest=refresh_digest(secret)))
+        set_session_cookies(response, sid, account.id, expires, secret)
+    return {"authenticated": True}
+
+
+def refresh_match(request):
+    sid, _, secret = request.cookies.get("refresh", "").partition(".")
+    return (LoginSession.id == sid, LoginSession.refresh_digest == refresh_digest(secret))
+
+
+@api.post("/auth/refresh")
+def refresh(request: Request, response: Response):
+    secret = secrets.token_urlsafe(32)
+    with Sessions.begin() as db:
+        session = db.execute(update(LoginSession).where(
+            *refresh_match(request), LoginSession.expires > int(time.time())
+        ).values(refresh_digest=refresh_digest(secret)).returning(
+            LoginSession.id, LoginSession.account, LoginSession.expires
+        )).one_or_none()
+        if session is None:
+            raise HTTPException(401, "Войдите в аккаунт")
+        set_session_cookies(response, session.id, session.account, session.expires, secret)
     return {"authenticated": True}
 
 
@@ -177,9 +216,19 @@ def identity(request: Request):
 
 
 @api.post("/auth/logout")
-def logout(response: Response, user=Depends(identity)):
+def logout(request: Request, response: Response):
+    # The refresh cookie can still revoke this session after the access cookie expires.
     with Sessions.begin() as db:
-        db.execute(delete(LoginSession).where(LoginSession.id == user[1]))
+        db.execute(delete(LoginSession).where(*refresh_match(request)))
+        try:
+            claims = jwt.decode(request.cookies.get("session", ""), KEY, algorithms=["HS256"])
+        except jwt.InvalidTokenError:
+            pass
+        else:
+            db.execute(delete(LoginSession).where(
+                LoginSession.id == claims["jti"], LoginSession.account == claims["sub"]
+            ))
+    response.delete_cookie("refresh", path=AUTH_PATH)
     response.delete_cookie("session")
     return {"authenticated": False}
 

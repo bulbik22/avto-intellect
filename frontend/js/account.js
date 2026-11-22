@@ -4,13 +4,33 @@ const notice = document.createElement("p");
 notice.setAttribute("role", "status");
 (form || document.querySelector("main") || document.body).append(notice);
 
+let refreshPending;
+
+async function renewSession() {
+  const refresh = () => fetch("/api/v1/auth/refresh", {method: "POST"});
+  if (!refreshPending) {
+    // Tabs share cookies. Serialize rotations so each request uses the latest token.
+    const request = navigator.locks ? navigator.locks.request("users-session-refresh", refresh) : refresh();
+    refreshPending = request.finally(() => { refreshPending = undefined; });
+  }
+  return refreshPending;
+}
+
 async function api(path, body) {
   const options = body === undefined ? {} : {
     method: "POST",
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(body)
   };
-  const response = await fetch("/api/v1/" + path, options);
+  let response = await fetch("/api/v1/" + path, options);
+  if (response.status === 401 && !path.startsWith("auth/")) {
+    const renewed = await renewSession();
+    if (renewed.ok) {
+      response = await fetch("/api/v1/" + path, options);
+    } else if (renewed.status !== 401) {
+      throw new Error("Не удалось продлить сессию. Попробуйте ещё раз.");
+    }
+  }
   const data = await response.json();
   if (!response.ok) {
     if (response.status === 401 && !["login.html","registration.html"].includes(page)) {
