@@ -17,6 +17,7 @@ from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import sessionmaker
 
 from .database import users_engine
+from .mail import send_code
 from .models import Account, Code, LoginSession, Vehicle
 
 
@@ -82,7 +83,11 @@ def issue(db, email, purpose):
         where=Code.expires <= now + 540,
     ).returning(Code.email))
     if result.scalar_one_or_none() is not None:
-        print(f"Локальная почта | {email} | {purpose} | {code}", flush=True)
+        try:
+            send_code(email, purpose, code)
+        except (OSError, ValueError):
+            # Roll back code issuance so a delivery failure can be retried immediately.
+            raise HTTPException(503, "Не удалось отправить письмо. Попробуйте ещё раз.") from None
 
 
 def consume(db, email, purpose, code):

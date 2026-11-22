@@ -11,3 +11,4 @@
 !migrations/script.py.mako
 !migrations/versions/
 !migrations/versions/*.py
+!services/users/mail.py
