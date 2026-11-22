@@ -15,4 +15,14 @@ if "AUTH_SECRET" not in os.environ:
 
 if __name__ == "__main__":
     command.upgrade(Config(str(root / "alembic.ini")), "head")
-    uvicorn.run("services.users.main:app", host="127.0.0.1", port=8000)
+    command.upgrade(Config(str(root / "alembic.ini"), ini_section="estimate"), "head")
+    from fastapi import FastAPI
+    from services.estimate.main import api as estimate_api
+    from fastapi.staticfiles import StaticFiles
+    from services.users.main import api as users_api
+
+    app = FastAPI(title="Авто-Интеллект")
+    app.include_router(users_api)
+    app.include_router(estimate_api)
+    app.mount("/", StaticFiles(directory=root.parent / "frontend", html=True), name="frontend")
+    uvicorn.run(app, host="127.0.0.1", port=8000)

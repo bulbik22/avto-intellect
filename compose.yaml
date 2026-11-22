@@ -41,10 +41,27 @@ services:
     volumes:
       - ./frontend:/app/frontend:ro
 
+  estimate:
+    build: ./backend
+    command: ["sh", "-c", "alembic -n estimate upgrade head && exec uvicorn services.estimate.main:app --host 0.0.0.0 --port 8000"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+      users:
+        condition: service_started
+    environment:
+      DATABASE_URL: postgresql+psycopg://
+      PGHOST: postgres
+      PGDATABASE: ${POSTGRES_DB:-avto_intellect}
+      PGUSER: ${POSTGRES_USER:-avto}
+      PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
+      USERS_URL: http://users:8000
+
   nginx:
     image: nginx:stable-alpine
     depends_on:
       - users
+      - estimate
     ports:
       - "127.0.0.1:${HTTP_PORT:-8080}:80"
     volumes:

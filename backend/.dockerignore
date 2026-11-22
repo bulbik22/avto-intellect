@@ -12,3 +12,8 @@
 !migrations/versions/
 !migrations/versions/*.py
 !services/users/mail.py
+!services/database.py
+!services/estimate/
+!services/estimate/*.py
+!migrations/estimate_versions/
+!migrations/estimate_versions/*.py
