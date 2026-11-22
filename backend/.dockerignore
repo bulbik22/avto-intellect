@@ -4,3 +4,10 @@
 !services/users/
 !services/users/main.py
 !services/users/models.py
+!services/users/database.py
+!alembic.ini
+!migrations/
+!migrations/env.py
+!migrations/script.py.mako
+!migrations/versions/
+!migrations/versions/*.py

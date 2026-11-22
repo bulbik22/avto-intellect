@@ -11,16 +11,17 @@ import jwt
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, EmailStr, Field
-from sqlalchemy import create_engine, delete, select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
 from sqlalchemy.orm import sessionmaker
 
-from .models import Account, Base, Code, LoginSession, Vehicle
+from .database import users_engine
+from .models import Account, Code, LoginSession, Vehicle
 
 
 ROOT = Path(__file__).resolve().parents[2]
-engine = create_engine(os.getenv("DATABASE_URL", f"sqlite:///{ROOT / 'local.db'}"))
+engine = users_engine()
 KEY = os.environ.get("AUTH_SECRET")
 if not KEY:
     raise RuntimeError("Задайте AUTH_SECRET перед запуском")
@@ -29,7 +30,6 @@ api = APIRouter(prefix="/api/v1")
 
 Sessions = sessionmaker(engine)
 upsert = {"postgresql": pg_insert, "sqlite": sqlite_insert}[engine.dialect.name]
-Base.metadata.create_all(engine)
 
 
 class Address(BaseModel):

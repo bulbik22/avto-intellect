@@ -1,6 +1,8 @@
 from pathlib import Path
 import os
 import secrets
+from alembic import command
+from alembic.config import Config
 import uvicorn
 
 root = Path(__file__).resolve().parent
@@ -12,4 +14,5 @@ if "AUTH_SECRET" not in os.environ:
     os.environ["AUTH_SECRET"] = key_file.read_text(encoding="ascii").strip()
 
 if __name__ == "__main__":
+    command.upgrade(Config(str(root / "alembic.ini")), "head")
     uvicorn.run("services.users.main:app", host="127.0.0.1", port=8000)
