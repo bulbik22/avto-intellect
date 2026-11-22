@@ -22,11 +22,11 @@
                     </div>
                     <div class="field field--compact">
                         <label class="field__label" for="password">Новый пароль</label>
-                        <input class="field__input" type="password" id="password" name="password" autocomplete="new-password" required>
+                        <input class="field__input" type="password" id="password" name="password" autocomplete="new-password" minlength="8" required>
                     </div>
                     <div class="field field--compact">
                         <label class="field__label" for="password-confirm">Подтвердите пароль</label>
-                        <input class="field__input" type="password" id="password-confirm" name="password-confirm" autocomplete="new-password" required>
+                        <input class="field__input" type="password" id="password-confirm" name="password-confirm" autocomplete="new-password" minlength="8" required>
                     </div>
                 </div>
                 <button class="recovery__submit btn btn--light btn--large" type="submit">Войти</button>
@@ -34,5 +34,6 @@
             <a class="recovery__back" href="login.html">Вернуться на страницу входа</a>
         </main>
     </div>
+    <script type="module" src="../js/account.js"></script>
 </body>
 </html>

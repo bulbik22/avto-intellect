@@ -19,6 +19,8 @@
                     <label class="field__label" for="code">Код подтверждения</label>
                     <input class="field__input" type="text" id="code" name="code" inputmode="numeric" autocomplete="one-time-code" required>
                 </div>
+            <label for="confirm-password">Повторите пароль для аккаунта</label>
+                <input class="field__input" type="password" id="confirm-password" name="password" minlength="8" autocomplete="new-password" required>
             </form>
             <button class="confirm__submit btn btn--light btn--medium" type="submit" form="confirm-form">Зарегистрироваться</button>
             <div class="confirm__login">
@@ -27,5 +29,6 @@
             </div>
         </main>
     </div>
+    <script type="module" src="../js/account.js"></script>
 </body>
 </html>
