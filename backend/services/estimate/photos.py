@@ -66,8 +66,8 @@ def require_access(db, draft_id, account, *, editing=False):
         status = db.scalar(select(Assessment.status).where(*owned))
     if status is None:
         raise HTTPException(404, "Заявка не найдена")
-    if editing and status != "draft":
-        raise HTTPException(409, "Фотографии можно менять только в черновике")
+    if editing and status not in ("draft", "needs_clarification", "error"):
+        raise HTTPException(409, "Редактирование фотографий для этой заявки недоступно")
 
 
 def image_type(data):

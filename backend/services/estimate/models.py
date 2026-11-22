@@ -19,6 +19,9 @@ class Assessment(Base):
     status: Mapped[str]
     description: Mapped[str]
     version: Mapped[int]
+    submitted_version: Mapped[int | None]
+    dispatch_after: Mapped[int | None] = mapped_column(index=True)
+    result_note: Mapped[str | None]
 
 
 class Photo(Base):

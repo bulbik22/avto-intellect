@@ -51,6 +51,11 @@ services:
     volumes:
       - minio_data:/bitnami/minio/data
 
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "127.0.0.1:6379:6379"
+
   estimate:
     build: ./backend
     command: ["sh", "-c", "alembic -n estimate upgrade head && exec uvicorn services.estimate.main:app --host 0.0.0.0 --port 8000"]
@@ -61,7 +66,8 @@ services:
         condition: service_started
       users:
         condition: service_started
-    environment:
+    environment: &estimate_environment
+      CELERY_BROKER_URL: redis://redis:6379/0
       DATABASE_URL: postgresql+psycopg://
       PGHOST: postgres
       PGDATABASE: ${POSTGRES_DB:-avto_intellect}
@@ -71,6 +77,23 @@ services:
       MINIO_ENDPOINT: minio:9000
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-avto}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
+
+  worker:
+    build: ./backend
+    command: ["sh", "-c", "alembic -n estimate upgrade head && exec celery -A services.estimate.tasks:app worker --concurrency=2 --loglevel=WARNING"]
+    environment: *estimate_environment
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+
+  scheduler:
+    build: ./backend
+    command: ["celery", "-A", "services.estimate.tasks:app", "beat", "--schedule=/tmp/estimate-beat", "--loglevel=WARNING"]
+    environment: *estimate_environment
+    depends_on:
+      - worker
 
   nginx:
     image: nginx:stable-alpine
