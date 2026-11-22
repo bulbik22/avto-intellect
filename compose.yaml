@@ -41,12 +41,24 @@ services:
     volumes:
       - ./frontend:/app/frontend:ro
 
+  minio:
+    image: bitnamilegacy/minio@sha256:451fe6858cb770cc9d0e77ba811ce287420f781c7c1b806a386f6896471a349c
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-avto}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
+    ports:
+      - "127.0.0.1:9000:9000"
+    volumes:
+      - minio_data:/bitnami/minio/data
+
   estimate:
     build: ./backend
     command: ["sh", "-c", "alembic -n estimate upgrade head && exec uvicorn services.estimate.main:app --host 0.0.0.0 --port 8000"]
     depends_on:
       postgres:
         condition: service_healthy
+      minio:
+        condition: service_started
       users:
         condition: service_started
     environment:
@@ -56,6 +68,9 @@ services:
       PGUSER: ${POSTGRES_USER:-avto}
       PGPASSWORD: ${POSTGRES_PASSWORD:?Set POSTGRES_PASSWORD in .env}
       USERS_URL: http://users:8000
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-avto}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?Set MINIO_ROOT_PASSWORD in .env}
 
   nginx:
     image: nginx:stable-alpine
@@ -70,3 +85,4 @@ services:
 
 volumes:
   postgres_data:
+  minio_data:

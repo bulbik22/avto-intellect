@@ -1,20 +1,16 @@
-import os
 from uuid import UUID, uuid4
 
-import httpx
 from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
 from pydantic import BaseModel, Field
 from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert as pg_insert
 from sqlalchemy.dialects.sqlite import insert as sqlite_insert
-from sqlalchemy.orm import sessionmaker
 
-from ..database import service_engine
+from .dependencies import Sessions, engine, owner, users_get
+from .photos import photos_api
 from .models import Assessment
 
 
-engine = service_engine("estimate")
-Sessions = sessionmaker(engine)
 insert = {"postgresql": pg_insert, "sqlite": sqlite_insert}[engine.dialect.name]
 api = APIRouter(prefix="/api/v1/assessments")
 
@@ -34,26 +30,6 @@ class Draft(BaseModel):
     description: str
     status: str
     version: int
-
-
-async def users_get(request, path):
-    endpoint = os.getenv("USERS_URL", "http://127.0.0.1:8000")
-    try:
-        async with httpx.AsyncClient(base_url=endpoint, timeout=5, trust_env=False) as client:
-            response = await client.get("/api/v1/" + path, cookies={"session": request.cookies.get("session", "")})
-    except httpx.RequestError:
-        raise HTTPException(503, "Сервис пользователей временно недоступен") from None
-    if response.status_code == 401:
-        raise HTTPException(401, "Войдите в аккаунт")
-    if response.status_code == 404:
-        raise HTTPException(404, "Автомобиль не найден")
-    if response.status_code != 200:
-        raise HTTPException(503, "Сервис пользователей временно недоступен")
-    return response.json()
-
-
-async def owner(request: Request):
-    return (await users_get(request, "users/me"))["id"]
 
 
 async def owned_car(body: CreateDraft, request: Request):
@@ -105,6 +81,8 @@ def edit_draft(assessment_id: UUID, body: EditDraft, account=Depends(owner)):
             raise HTTPException(404, "Заявка не найдена")
         raise HTTPException(409, "Заявка уже изменилась. Обновите страницу перед сохранением.")
 
+
+api.include_router(photos_api)
 
 app = FastAPI(title="Авто-Интеллект — оценка")
 app.include_router(api)
