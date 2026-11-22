@@ -1,0 +1,6 @@
+*
+!requirements.txt
+!services/
+!services/users/
+!services/users/main.py
+!services/users/models.py
