@@ -22,10 +22,10 @@
         <main class="app__content">
             <form class="card damage" action="#" method="POST" enctype="multipart/form-data">
                 <h1 class="card__title">Описание повреждений</h1>
-                <p class="card__text">Загрузите фото и/или опишите проблему текстом</p>
+                <p class="card__text">Опишите проблему и сохраните черновик.</p>
                 <div class="damage__fields">
                     <div class="field field--sm">
-                        <span class="field__label" id="photos-label">Загрузка фото</span>
+                        <span class="field__label" id="photos-label">Предпросмотр фото (без сохранения)</span>
                         <input class="visually-hidden" type="file" id="photo-input" name="photos" accept="image/*" multiple>
                         <ul class="photos" id="photos" aria-labelledby="photos-label">
                             <li class="photos__slot photos__slot--add">
@@ -47,18 +47,18 @@
                     </div>
                     <div class="field field--sm damage__text">
                         <label class="field__label" for="description">Опишите проблему</label>
-                        <textarea class="field__input field__input--area damage__textarea" id="description" name="description" placeholder="Удар в переднюю часть . . ."></textarea>
+                        <textarea class="field__input field__input--area damage__textarea" disabled maxlength="10000" id="description" name="description" placeholder="Удар в переднюю часть . . ."></textarea>
                     </div>
                 </div>
                 <div class="card__actions card__actions--split">
-                    <a class="card__action btn btn--navy btn--large" href="car-data.html">
+                    <a class="card__action btn btn--navy btn--large" href="cabinet.html">
                         <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
                             <path d="M7 1L1 7L7 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
                         </svg>
                         Назад
                     </a>
-                    <button class="card__action btn btn--navy btn--large" type="submit">
-                        Анализ
+                    <button class="card__action btn btn--navy btn--large" type="submit" disabled>
+                        Сохранить черновик
                         <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">
                             <path d="M1 1L7 7L1 13" fill="none" stroke="currentColor" stroke-width="1.6"/>
                         </svg>
@@ -80,6 +80,7 @@
         </li>
     </template>
 
+    <script type="module" src="../js/account.js"></script>
     <script src="../js/photos.js"></script>
 </body>
 </html>

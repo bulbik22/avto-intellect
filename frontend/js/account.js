@@ -16,9 +16,9 @@ async function renewSession() {
   return refreshPending;
 }
 
-async function api(path, body) {
+async function api(path, body, method = "POST") {
   const options = body === undefined ? {} : {
-    method: "POST",
+    method,
     headers: {"Content-Type": "application/json"},
     body: JSON.stringify(body)
   };
@@ -39,6 +39,29 @@ async function api(path, body) {
     throw new Error(typeof data.detail === "string" ? data.detail : "Проверьте поля формы.");
   }
   return data;
+}
+
+let currentDraft;
+
+async function loadDraft() {
+  const params = new URLSearchParams(location.search);
+  const assessmentId = params.get("assessment_id");
+  const carId = params.get("car_id") || sessionStorage.getItem("car_id");
+  if (!assessmentId && !carId) {
+    location.replace("cabinet.html");
+    return;
+  }
+  currentDraft = assessmentId
+    ? await api("assessments/" + encodeURIComponent(assessmentId))
+    : await api("assessments", {car_id: carId});
+  history.replaceState(null, "", "?assessment_id=" + encodeURIComponent(currentDraft.assessment_id));
+  form.elements.description.value = currentDraft.description;
+  form.elements.description.disabled = false;
+  form.querySelector('[type="submit"]').disabled = false;
+}
+
+if (page === "damage.html") {
+  loadDraft().catch(error => notice.textContent = error.message);
 }
 
 const actions = {
@@ -64,7 +87,14 @@ const actions = {
     const car = await api("cars", {make: data.brand.trim(), model: data.model.trim(),
       year: Number(data.year), mileage_km: Number(data.mileage), region: data.region.trim()});
     sessionStorage.setItem("car_id", car.id);
-    location.assign("damage.html");
+    location.assign("damage.html?car_id=" + encodeURIComponent(car.id));
+  },
+  async "damage.html"(data) {
+    if (!currentDraft) return;
+    currentDraft = await api("assessments/" + currentDraft.assessment_id, {
+      description: data.description, version: currentDraft.version
+    }, "PATCH");
+    notice.textContent = "Описание сохранено в черновике.";
   }
 };
 
@@ -96,13 +126,22 @@ async function loadCabinet() {
   const [profile, cars] = await Promise.all([api("users/me"), api("cars")]);
   document.querySelector(".cabinet__value").textContent = profile.email;
   const list = document.querySelector("#saved-list");
+  let drafts = [];
+  try {
+    drafts = await api("assessments");
+  } catch (error) {
+    notice.textContent = error.message;
+  }
+  const byCar = new Map(drafts.map(draft => [draft.car_id, draft]));
   for (const car of cars) {
     const item = document.createElement("li");
     item.className = "doc";
     const link = document.createElement("a");
-    link.href = "damage.html";
+    const draft = byCar.get(car.id);
+    link.href = draft ? "damage.html?assessment_id=" + encodeURIComponent(draft.assessment_id)
+      : "damage.html?car_id=" + encodeURIComponent(car.id);
     link.textContent = [car.make, car.model, car.year, car.region].join(" · ");
-    link.addEventListener("click", () => sessionStorage.setItem("car_id", car.id));
+    if (draft) link.textContent += " · Продолжить черновик";
     item.append(link);
     list.append(item);
   }
