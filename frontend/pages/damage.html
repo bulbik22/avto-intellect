@@ -22,7 +22,7 @@
         <main class="app__content">
             <form class="card damage" action="#" method="POST" enctype="multipart/form-data">
                 <h1 class="card__title">Описание повреждений</h1>
-                <p class="card__text">Опишите проблему и сохраните черновик.</p>
+                <p class="card__text">Добавьте описание или фото повреждений.</p>
                 <div class="damage__fields">
                     <div class="field field--sm">
                         <span class="field__label" id="photos-label">Фото повреждений · до 6 файлов по 8 МБ</span>
@@ -51,6 +51,8 @@
                         <textarea class="field__input field__input--area damage__textarea" disabled maxlength="10000" id="description" name="description" placeholder="Удар в переднюю часть . . ."></textarea>
                     </div>
                 </div>
+                <p id="assessment-status" role="status"></p>
+                <button class="card__action btn btn--navy btn--large" id="calculate" type="submit" disabled>Рассчитать</button>
                 <div class="card__actions card__actions--split">
                     <a class="card__action btn btn--navy btn--large" href="cabinet.html">
                         <svg class="btn__icon" viewBox="0 0 8 14" aria-hidden="true">

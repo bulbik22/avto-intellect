@@ -45,6 +45,38 @@ async function api(path, body, method = body === undefined ? "GET" : "POST") {
 }
 
 let currentDraft;
+let photoControls;
+let submitting = false;
+const editable = status => ["draft", "needs_clarification", "error"].includes(status);
+const statusNames = {
+  draft: "Черновик", queued: "В очереди", processing: "Обрабатывается",
+  needs_clarification: "Требуется уточнение", ready: "Материалы проверены", error: "Ошибка обработки"
+};
+
+function showAssessment() {
+  const canEdit = editable(currentDraft.status) && !submitting;
+  const busy = photoControls?.busy() ?? true;
+  form.elements.description.disabled = !canEdit;
+  form.querySelector('button[type="submit"]:not(#calculate)').disabled = !canEdit || busy;
+  form.querySelector("#calculate").disabled = !canEdit || busy;
+  photoControls?.setEditable(canEdit);
+  document.getElementById("assessment-status").textContent =
+    [statusNames[currentDraft.status], currentDraft.result_note].filter(Boolean).join(". ");
+}
+
+function pollAssessment() {
+  if (!["queued", "processing"].includes(currentDraft.status)) return;
+  setTimeout(async () => {
+    try {
+      currentDraft = await api("assessments/" + currentDraft.assessment_id);
+      showAssessment();
+      notice.textContent = "";
+    } catch (error) {
+      notice.textContent = error.message;
+    }
+    pollAssessment();
+  }, 1500);
+}
 
 async function loadDraft() {
   const params = new URLSearchParams(location.search);
@@ -59,10 +91,11 @@ async function loadDraft() {
     : await api("assessments", {car_id: carId});
   history.replaceState(null, "", "?assessment_id=" + encodeURIComponent(currentDraft.assessment_id));
   form.elements.description.value = currentDraft.description;
-  form.elements.description.disabled = false;
-  form.querySelector('[type="submit"]').disabled = false;
+
   const {setupPhotos} = await import("./photos.js");
-  await setupPhotos(currentDraft.assessment_id, api);
+  photoControls = await setupPhotos(currentDraft.assessment_id, api, showAssessment);
+  showAssessment();
+  pollAssessment();
 }
 
 if (page === "damage.html") {
@@ -94,8 +127,22 @@ const actions = {
     sessionStorage.setItem("car_id", car.id);
     location.assign("damage.html?car_id=" + encodeURIComponent(car.id));
   },
-  async "damage.html"(data) {
-    if (!currentDraft) return;
+  async "damage.html"(data, button) {
+    if (!currentDraft || submitting || !editable(currentDraft.status) || photoControls?.busy()) return;
+    if (button?.id === "calculate") {
+      submitting = true;
+      showAssessment();
+      try {
+        currentDraft = await api("assessments/" + currentDraft.assessment_id + "/calculate", {
+          description: data.description, version: currentDraft.version
+        });
+        notice.textContent = "";
+        pollAssessment();
+      } finally {
+        submitting = false;
+      }
+      return;
+    }
     currentDraft = await api("assessments/" + currentDraft.assessment_id, {
       description: data.description, version: currentDraft.version
     }, "PATCH");
@@ -108,11 +155,12 @@ form?.addEventListener("submit", async event => {
   const button = event.submitter;
   if (button) button.disabled = true;
   try {
-    await actions[page](Object.fromEntries(new FormData(form)));
+    await actions[page](Object.fromEntries(new FormData(form)), button);
   } catch (error) {
     notice.textContent = error.message;
   } finally {
-    if (button) button.disabled = false;
+    if (page === "damage.html" && currentDraft) showAssessment();
+    else if (button) button.disabled = false;
   }
 });
 
@@ -133,11 +181,11 @@ async function loadCabinet() {
   const list = document.querySelector("#saved-list");
   let drafts = [];
   try {
-    drafts = await api("assessments");
+    drafts = await api("assessments?include_history=true");
   } catch (error) {
     notice.textContent = error.message;
   }
-  const byCar = new Map(drafts.map(draft => [draft.car_id, draft]));
+  const byCar = new Map(drafts.filter(item => item.status === "draft").map(item => [item.car_id, item]));
   for (const car of cars) {
     const item = document.createElement("li");
     item.className = "doc";
@@ -147,6 +195,17 @@ async function loadCabinet() {
       : "damage.html?car_id=" + encodeURIComponent(car.id);
     link.textContent = [car.make, car.model, car.year, car.region].join(" · ");
     if (draft) link.textContent += " · Продолжить черновик";
+    item.append(link);
+    list.append(item);
+  }
+  const carNames = new Map(cars.map(car => [car.id, [car.make, car.model, car.year].join(" ")]));
+  for (const draft of drafts.filter(item => item.status !== "draft")) {
+    const item = document.createElement("li");
+    item.className = "doc";
+    const link = document.createElement("a");
+    link.href = "damage.html?assessment_id=" + encodeURIComponent(draft.assessment_id);
+    link.textContent = [carNames.get(draft.car_id), statusNames[draft.status], draft.description.slice(0, 60)]
+      .filter(Boolean).join(" · ");
     item.append(link);
     list.append(item);
   }

@@ -1,4 +1,4 @@
-export async function setupPhotos(assessmentId, api) {
+export async function setupPhotos(assessmentId, api, onBusyChange) {
   const path = "assessments/" + assessmentId + "/photos";
   const input = document.getElementById("photo-input");
   const list = document.getElementById("photos");
@@ -7,6 +7,7 @@ export async function setupPhotos(assessmentId, api) {
   const status = document.getElementById("photo-status");
   let photos = await api(path);
   let busy = false;
+  let editable = false;
 
   function render() {
     list.replaceChildren();
@@ -17,12 +18,12 @@ export async function setupPhotos(assessmentId, api) {
       img.alt = "Фото повреждения " + (index + 1);
       const remove = slot.querySelector("button");
       remove.dataset.id = photo.photo_id;
-      remove.disabled = busy;
+      remove.disabled = busy || !editable;
       remove.setAttribute("aria-label", "Удалить фото " + (index + 1));
       list.append(slot);
     }
-    input.disabled = busy || photos.length >= 6;
-    if (photos.length < 6) list.append(addSlot);
+    input.disabled = !editable || busy || photos.length >= 6;
+    if (editable && photos.length < 6) list.append(addSlot);
     while (list.children.length < 6) {
       const empty = document.createElement("li");
       empty.className = "photos__slot";
@@ -31,8 +32,9 @@ export async function setupPhotos(assessmentId, api) {
   }
 
   async function change(message, operation) {
-    if (busy) return;
+    if (!editable || busy) return;
     busy = true;
+    onBusyChange();
     render();
     status.textContent = message;
     try {
@@ -47,6 +49,7 @@ export async function setupPhotos(assessmentId, api) {
         status.textContent = error.message;
       }
       busy = false;
+      onBusyChange();
       render();
     }
   }
@@ -68,4 +71,13 @@ export async function setupPhotos(assessmentId, api) {
     if (button) change("Удаляем фото…", () => api(path + "/" + button.dataset.id, undefined, "DELETE"));
   });
   render();
+  return {
+    busy: () => busy,
+    setEditable(value) {
+      if (editable !== value) {
+        editable = value;
+        render();
+      }
+    }
+  };
 }
