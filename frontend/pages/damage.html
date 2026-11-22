@@ -25,8 +25,8 @@
                 <p class="card__text">Опишите проблему и сохраните черновик.</p>
                 <div class="damage__fields">
                     <div class="field field--sm">
-                        <span class="field__label" id="photos-label">Предпросмотр фото (без сохранения)</span>
-                        <input class="visually-hidden" type="file" id="photo-input" name="photos" accept="image/*" multiple>
+                        <span class="field__label" id="photos-label">Фото повреждений · до 6 файлов по 8 МБ</span>
+                        <input class="visually-hidden" type="file" id="photo-input" name="photos" accept="image/jpeg,image/png,image/webp" multiple disabled>
                         <ul class="photos" id="photos" aria-labelledby="photos-label">
                             <li class="photos__slot photos__slot--add">
                                 <label class="photos__add" for="photo-input">
@@ -44,6 +44,7 @@
                             <li class="photos__slot"></li>
                             <li class="photos__slot"></li>
                         </ul>
+                        <p role="status" id="photo-status"></p>
                     </div>
                     <div class="field field--sm damage__text">
                         <label class="field__label" for="description">Опишите проблему</label>
@@ -81,6 +82,6 @@
     </template>
 
     <script type="module" src="../js/account.js"></script>
-    <script src="../js/photos.js"></script>
+
 </body>
 </html>

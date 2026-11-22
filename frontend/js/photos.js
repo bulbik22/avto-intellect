@@ -1,63 +1,71 @@
-// Загрузка фото на экране «Описание повреждений»:
-// превью выбранных фото, удаление крестиком, не больше MAX штук.
-// Сами файлы лежат в <input type="file" name="photos"> — форма отправит их на сервер как есть (multipart/form-data).
-(() => {
-  const MAX = 6;
-  const input = document.getElementById('photo-input');
-  const list = document.getElementById('photos');
-  const template = document.getElementById('photo-template');
-  if (!input || !list || !template) return;
-
-  const addSlot = list.querySelector('.photos__slot--add');   // слот с камерой: один на всех, переезжает на первое свободное место
-  let files = [];   // выбранные файлы по порядку
-  let urls = [];    // адреса превью; освобождаем при удалении
-
-  // Отдаём input актуальный список: после удаления фото на сервер должны уйти только оставшиеся
-  function syncInput() {
-    const transfer = new DataTransfer();
-    files.forEach((file) => transfer.items.add(file));
-    input.files = transfer.files;
-  }
+export async function setupPhotos(assessmentId, api) {
+  const path = "assessments/" + assessmentId + "/photos";
+  const input = document.getElementById("photo-input");
+  const list = document.getElementById("photos");
+  const template = document.getElementById("photo-template");
+  const addSlot = list.querySelector(".photos__slot--add");
+  const status = document.getElementById("photo-status");
+  let photos = await api(path);
+  let busy = false;
 
   function render() {
     list.replaceChildren();
-    for (let i = 0; i < MAX; i++) {
-      if (i < files.length) {
-        const slot = template.content.firstElementChild.cloneNode(true);
-        const img = slot.querySelector('.photos__img');
-        img.src = urls[i];
-        img.alt = `Фото ${i + 1}`;
-        slot.querySelector('.photos__remove').setAttribute('aria-label', `Удалить фото ${i + 1}`);
-        list.append(slot);
-      } else if (i === files.length) {
-        list.append(addSlot);
-      } else {
-        const empty = document.createElement('li');
-        empty.className = 'photos__slot';
-        list.append(empty);
-      }
+    for (const [index, photo] of photos.entries()) {
+      const slot = template.content.firstElementChild.cloneNode(true);
+      const img = slot.querySelector("img");
+      img.src = "/api/v1/" + path + "/" + photo.photo_id;
+      img.alt = "Фото повреждения " + (index + 1);
+      const remove = slot.querySelector("button");
+      remove.dataset.id = photo.photo_id;
+      remove.disabled = busy;
+      remove.setAttribute("aria-label", "Удалить фото " + (index + 1));
+      list.append(slot);
+    }
+    input.disabled = busy || photos.length >= 6;
+    if (photos.length < 6) list.append(addSlot);
+    while (list.children.length < 6) {
+      const empty = document.createElement("li");
+      empty.className = "photos__slot";
+      list.append(empty);
     }
   }
 
-  input.addEventListener('change', () => {
-    const free = MAX - files.length;
-    const added = [...input.files].filter((file) => file.type.startsWith('image/')).slice(0, free);
-    added.forEach((file) => {
-      files.push(file);
-      urls.push(URL.createObjectURL(file));
-    });
-    syncInput();
+  async function change(message, operation) {
+    if (busy) return;
+    busy = true;
     render();
-  });
+    status.textContent = message;
+    try {
+      await operation();
+      status.textContent = "";
+    } catch (error) {
+      status.textContent = error.message;
+    } finally {
+      try {
+        photos = await api(path);
+      } catch (error) {
+        status.textContent = error.message;
+      }
+      busy = false;
+      render();
+    }
+  }
 
-  list.addEventListener('click', (event) => {
-    const button = event.target.closest('.photos__remove');
-    if (!button) return;
-    const index = [...list.children].indexOf(button.closest('.photos__slot'));
-    URL.revokeObjectURL(urls[index]);
-    files.splice(index, 1);
-    urls.splice(index, 1);
-    syncInput();
-    render();
+  input.addEventListener("change", () => {
+    const files = Array.from(input.files);
+    input.value = "";
+    change("Сохраняем фотографии…", async () => {
+      for (const file of files) {
+        if (file.size > 8 * 1024 * 1024) throw new Error("Максимальный размер фотографии — 8 МБ.");
+        const data = new FormData();
+        data.append("file", file);
+        await api(path, data);
+      }
+    });
   });
-})();
+  list.addEventListener("click", event => {
+    const button = event.target.closest("button[data-id]");
+    if (button) change("Удаляем фото…", () => api(path + "/" + button.dataset.id, undefined, "DELETE"));
+  });
+  render();
+}

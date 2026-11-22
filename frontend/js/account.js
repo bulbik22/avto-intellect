@@ -16,12 +16,14 @@ async function renewSession() {
   return refreshPending;
 }
 
-async function api(path, body, method = "POST") {
-  const options = body === undefined ? {} : {
-    method,
-    headers: {"Content-Type": "application/json"},
-    body: JSON.stringify(body)
-  };
+async function api(path, body, method = body === undefined ? "GET" : "POST") {
+  const options = {method};
+  if (body instanceof FormData) {
+    options.body = body;
+  } else if (body !== undefined) {
+    options.headers = {"Content-Type": "application/json"};
+    options.body = JSON.stringify(body);
+  }
   let response = await fetch("/api/v1/" + path, options);
   if (response.status === 401 && !path.startsWith("auth/")) {
     const renewed = await renewSession();
@@ -31,7 +33,8 @@ async function api(path, body, method = "POST") {
       throw new Error("Не удалось продлить сессию. Попробуйте ещё раз.");
     }
   }
-  const data = await response.json();
+  if (response.status === 204) return;
+  const data = await response.json().catch(() => ({}));
   if (!response.ok) {
     if (response.status === 401 && !["login.html","registration.html"].includes(page)) {
       location.assign("login.html");
@@ -58,6 +61,8 @@ async function loadDraft() {
   form.elements.description.value = currentDraft.description;
   form.elements.description.disabled = false;
   form.querySelector('[type="submit"]').disabled = false;
+  const {setupPhotos} = await import("./photos.js");
+  await setupPhotos(currentDraft.assessment_id, api);
 }
 
 if (page === "damage.html") {
